@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-static char* readFile(const char* path)
+static char* shaderReadFile(const char* path)
 {
     FILE* file = fopen(path, "rb");
     if (!file) {
@@ -39,7 +39,7 @@ static char* readFile(const char* path)
     return buffer;
 }
 
-static unsigned int compile(unsigned int type, const char* src)
+static unsigned int shaderCompile(unsigned int type, const char* src)
 {
     unsigned int id = glCreateShader(type);
     glShaderSource(id, 1, &src, NULL);
@@ -61,8 +61,8 @@ static unsigned int compile(unsigned int type, const char* src)
 unsigned int shaderLoad(const char* vertex_path, const char* fragment_path)
 {
     // 读取源码
-    char* vertex_src = readFile(vertex_path);
-    char* fragment_src = readFile(fragment_path);
+    char* vertex_src = shaderReadFile(vertex_path);
+    char* fragment_src = shaderReadFile(fragment_path);
     if (!vertex_src || !fragment_src)
     {
         printf("Failed Load Shader File\n");
@@ -70,8 +70,8 @@ unsigned int shaderLoad(const char* vertex_path, const char* fragment_path)
     }
 
     // 编译
-    unsigned int vertex = compile(GL_VERTEX_SHADER, vertex_src);
-    unsigned int fragment = compile(GL_FRAGMENT_SHADER, fragment_src);
+    unsigned int vertex = shaderCompile(GL_VERTEX_SHADER, vertex_src);
+    unsigned int fragment = shaderCompile(GL_FRAGMENT_SHADER, fragment_src);
     free(vertex_src);
     free(fragment_src);
     if (!vertex || !fragment)
