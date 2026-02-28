@@ -11,6 +11,7 @@
 
 static char* shaderReadFile(const char* path)
 {
+    // 打开文件
     FILE* file = fopen(path, "rb");
     if (!file) {
         printf("Failed to open file: %s\n", path);
@@ -35,12 +36,14 @@ static char* shaderReadFile(const char* path)
     fread(buffer, 1, size, file);
     buffer[size] = '\0';
 
+    // 关闭文件
     fclose(file);
     return buffer;
 }
 
 static unsigned int shaderCompile(unsigned int type, const char* src)
 {
+    // 创建并编译shader
     unsigned int id = glCreateShader(type);
     glShaderSource(id, 1, &src, NULL);
     glCompileShader(id);
@@ -52,7 +55,10 @@ static unsigned int shaderCompile(unsigned int type, const char* src)
     {
         char log[512];
         glGetShaderInfoLog(id, 512, NULL, log);
-        printf("Failed Compile Shader: %s\n", log);
+        if (type == GL_VERTEX_SHADER)
+            printf("Failed Compile Vertex Shader: %s\n", log);
+        if (type == GL_FRAGMENT_SHADER)
+            printf("Failed Compile Fragment Shader: %s\n", log);
         return 0;
     }
     return id;
